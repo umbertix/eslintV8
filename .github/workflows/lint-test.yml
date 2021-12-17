@@ -1,0 +1,59 @@
+name: Lint & Test
+
+on: push
+
+env:
+  NPM_GITHUB_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+  DEFAULT_BRANCH: main
+  REPO_NAME: https://github.com/Unity-Technologies/live-platform-eslint-config
+
+jobs:
+  test:
+    name: Run lint and test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Checkout git repository
+        uses: actions/checkout@v2
+
+      - name: Setup authorization
+        run: cp .npmrc ~/.npmrc
+
+      - name: Read .nvmrc
+        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc | grep -o "[^a-z].*")
+        id: nvm
+
+      - name: Setup node v${{ steps.nvm.outputs.NODE_VERSION }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ steps.nvm.outputs.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Test
+        run: yarn test
+
+  slack-failure-notification:
+    name: Send Slack Notification if Workflow Fails
+    needs: [test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/workflow-conclusion-action@v2
+      - name: Report Status on Failure
+        if: ${{ env.WORKFLOW_CONCLUSION == 'failure' && github.ref == 'refs/heads/feature/${{ env.DEFAULT_BRANCH }}' }}
+        uses: slackapi/slack-github-action@v1.15.0
+        with:
+          channel-id: "live-platform-notifications"
+          slack-message: '"${{ github.workflow }}" workflow failed on ${{ env.DEFAULT_BRANCH }} branch! <${{ env.REPO_NAME }}/actions/runs/${{ github.run_id }}|Link to build.>'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

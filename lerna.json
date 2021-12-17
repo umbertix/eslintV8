@@ -1,0 +1,12 @@
+{
+  "packages": ["packages/*"],
+  "version": "independent",
+  "npmClient": "yarn",
+  "command": {
+    "publish": {
+      "access": "restricted",
+      "registry": "https://npm.pkg.github.com",
+      "scope": "@umbertix"
+    }
+  }
+}
