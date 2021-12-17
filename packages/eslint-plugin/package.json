@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "eslint-plugin-prettier": "^4.0.0",
-    "@typescript-eslint/eslint-plugin": "@canary",
+    "eslint-plugin-jest": "^25.0.0",
     "@typescript-eslint/parser": "^5.0.0"
   },
   "peerDependencies": {
