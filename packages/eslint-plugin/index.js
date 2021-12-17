@@ -21,12 +21,13 @@ module.exports = {
       ...tsParser,
       plugins: [
         ...new Set([
-          "@typescript-eslint"
+          "jest"
         ]),
       ],
       extends: [
         ...new Set([
-          "plugin:@typescript-eslint/recommended"
+          "plugin:jest/recommended",
+          "plugin:jest/style",
         ]),
       ]
     },
