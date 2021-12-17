@@ -13,8 +13,6 @@ async function getEslintErrors(fileToTest, eslintConfig) {
 }
 
 const eslintTypeList = [
-  ["json", ".json"],
-  ["md", ".md"],
   ["ts", ".ts"],
   ["jest", ".test.ts"],
 ];

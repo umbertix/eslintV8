@@ -7,7 +7,7 @@ env:
 
 jobs:
   test:
-    name: Run lint and test
+    name: Run test
     runs-on: ubuntu-latest
 
     steps:
